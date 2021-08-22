@@ -1,10 +1,7 @@
-# Python CircleCI 2.0 configuration file
-#
-# Check https://circleci.com/docs/2.0/language-python/ for more details
-#
-version: 2
+version: 2.1
+
 jobs:
-  lint:
+  lint-app:
     docker:
       - image: python:3.7.3-stretch
     working_directory: ~/repo
@@ -38,4 +35,4 @@ jobs:
 workflows:
   default:
     jobs:
-       - lint
+       - lint-app
