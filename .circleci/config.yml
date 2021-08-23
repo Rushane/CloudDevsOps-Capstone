@@ -32,17 +32,17 @@ jobs:
             make lint
             
   build-docker-image:
-    docker:
-      - image: circleci/golang:1.15
-        auth:
-            username: $DOCKER_USER
-            password: $DOCKER_PASSWORD
-    # machine: true
+    # docker:
+    #   - image: circleci/golang:1.15
+    #     auth:
+    #         username: $DOCKER_USER
+    #         password: $DOCKER_PASSWORD
+    machine: true
     # working_directory: ~/app
     steps:
       - checkout
-      - setup_remote_docker:
-          version: 19.03.13
+      # - setup_remote_docker:
+      #     version: 19.03.13
       - run:
           name: Build Docker Image
           command: |
