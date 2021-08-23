@@ -54,7 +54,7 @@ jobs:
           command: |
             echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
             TAG=capstone
-            dockerpath=rushane/$TAG
+            dockerpath=8762783629/$TAG
             docker tag $TAG $dockerpath
             docker push $dockerpath
             
