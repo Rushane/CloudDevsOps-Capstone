@@ -31,8 +31,36 @@ jobs:
             . venv/bin/activate
             make lint
             
+  build-docker-image:
+    docker:
+      - image: circleci/golang:1.15
+        auth:
+             username: $DOCKER_USER
+             password: $DOCKER_PASSWORD
+    steps:
+      - checkout
+      - setup_remote_docker:
+          version: 19.03.13
+      - run:
+          name: Build Docker Image
+          command: |
+            docker build --tag=capstone .
+      - run:
+          name: List Docker Image
+          command: |
+            docker image ls
+      - run:
+          name: Push Docker image into Docker Hub
+          command: |
+            docker login -u ${DOCKER_USERNAME} -p ${DOCKER_PWD}
+            TAG=capstone
+            dockerpath=rushane/$TAG
+            docker tag $TAG $dockerpath
+            docker push $dockerpath
+            
             
 workflows:
   default:
     jobs:
        - lint-app
+       - build-docker-image
