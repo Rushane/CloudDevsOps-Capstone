@@ -52,7 +52,7 @@ jobs:
       - run:
           name: Push Docker image into Docker Hub
           command: |
-            docker login -u ${DOCKER_USERNAME} -p ${DOCKER_PASSWORD}
+            docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD 
             TAG=capstone
             dockerpath=rushane/$TAG
             docker tag $TAG $dockerpath
