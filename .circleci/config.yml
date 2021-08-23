@@ -52,7 +52,7 @@ jobs:
       - run:
           name: Push Docker image into Docker Hub
           command: |
-            echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
+            docker login -u ${DOCKER_USERNAME} -p ${DOCKER_PASSWORD}
             TAG=capstone
             dockerpath=8762783629/$TAG
             docker tag $TAG $dockerpath
