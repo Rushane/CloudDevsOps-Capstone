@@ -63,6 +63,7 @@ jobs:
             # install sudo package 
             yum -y -qq update
             yum -y install sudo
+            yum install -y tar.x86_64
             # extras for below installs
             sudo yum -y install curl gnupg2 software-properties-common unzip less git dos2unix
             
