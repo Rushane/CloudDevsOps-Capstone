@@ -37,6 +37,8 @@ jobs:
     #     auth:
     #         username: $DOCKER_USER
     #         password: $DOCKER_PASSWORD
+    machine: true
+    working_directory: ~/app
     steps:
       - checkout
       # - setup_remote_docker:
