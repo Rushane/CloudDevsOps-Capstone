@@ -86,7 +86,7 @@ workflows:
       #       requires: [build-docker-image]
        - aws-eks/create-cluster:
             cluster-name: DevOps-Capstone
-             requires: [build-docker-image]
+            requires: [build-docker-image]
        - create-deployment:
             cluster-name: DevOps-Capstone
             requires:
