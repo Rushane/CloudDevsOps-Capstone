@@ -1,0 +1,24 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: capstone-deployment-rolling-update
+spec:
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        app: DevOps-Capstone
+        role: rolling-update
+    spec:
+      containers:
+      - name: DevOps-Capstone
+        image: 8762783629/capstone
+        ports:
+        - containerPort: 8080
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 8080
+  strategy:
+    type: RollingUpdate
+    rollingUp      maxSurge: 50%

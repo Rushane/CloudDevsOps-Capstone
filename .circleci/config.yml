@@ -1,5 +1,9 @@
 version: 2.1
 
+orbs:
+  aws-eks: circleci/aws-eks@0.2.3
+  kubernetes: circleci/kubernetes@0.4.0
+
 jobs:
   lint-app:
     docker:
@@ -51,29 +55,24 @@ jobs:
             dockerpath=8762783629/$TAG
             docker tag $TAG $dockerpath
             docker push $dockerpath
-            
-  deploy-kubernetes:
-    docker:
-      - image: amazon/aws-cli
+  
+  # https://circleci.com/developer/orbs/orb/circleci/aws-eks#usage-create-k8s-deployment 
+  create-deployment:
+    executor: aws-eks/python3
+    parameters:
+      cluster-name:
+        description: |
+          DevOps-Capstone
+        type: string
     steps:
       - checkout
-      - run:
-          name: Install dependencies
-          command: |
-            # install sudo package 
-            yum -y -qq update
-            yum -y install sudo
-            yum install -y tar.x86_64
-            # extras for below installs
-            sudo yum -y install curl gnupg2 software-properties-common unzip less git dos2unix
-            
-            # Install kubectl
-            curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
-            sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
-            
-            # Install eksctl
-            curl --silent --location "https://github.com/weaveworks/eksctl/releases/latest/download/eksctl_$(uname -s)_amd64.tar.gz" | tar xz -C /tmp
-            sudo mv /tmp/eksctl /usr/local/bin
+      - aws-eks/update-kubeconfig-with-authenticator:
+          cluster-name: << parameters.cluster-name >>
+          install-kubectl: true
+      - kubernetes/create-or-update-resource:
+          get-rollout-status: true
+          resource-file-path: deployment.yml
+          resource-name: deployment/DevOps-Capstone
 
             
             
@@ -83,5 +82,24 @@ workflows:
        - lint-app
        - build-docker-image:
             requires: [lint-app]
-       - deploy-kubernetes:
-            requires: [build-docker-image]
+      # - deploy-kubernetes:
+      #       requires: [build-docker-image]
+      - aws-eks/create-cluster:
+          cluster-name: DevOps-Capstone
+           requires: [build-docker-image]
+      - create-deployment:
+          cluster-name: DevOps-Capstone
+          requires:
+            - aws-eks/create-cluster
+      - aws-eks/update-container-image:
+          cluster-name: DevOps-Capstone
+          container-image-updates: 'nginx=nginx:1.9.1'
+          post-steps:
+            - kubernetes/delete-resource:
+                resource-names: deployment/DevOps-Capstone
+                resource-types: deployment
+                wait: true
+          record: true
+          requires:
+            - create-deployment
+          resource-name: deployment/DevOps-Capstone
