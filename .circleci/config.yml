@@ -84,22 +84,24 @@ workflows:
             requires: [lint-app]
       # - deploy-kubernetes:
       #       requires: [build-docker-image]
-      - aws-eks/create-cluster:
-          cluster-name: DevOps-Capstone
-           requires: [build-docker-image]
-      - create-deployment:
-          cluster-name: DevOps-Capstone
-          requires:
-            - aws-eks/create-cluster
-      - aws-eks/update-container-image:
-          cluster-name: DevOps-Capstone
-          container-image-updates: 'nginx=nginx:1.9.1'
-          post-steps:
-            - kubernetes/delete-resource:
-                resource-names: deployment/DevOps-Capstone
-                resource-types: deployment
-                wait: true
-          record: true
-          requires:
-            - create-deployment
-          resource-name: deployment/DevOps-Capstone
+       - aws-eks/create-cluster:
+            cluster-name: DevOps-Capstone
+             requires: [build-docker-image]
+       - create-deployment:
+            cluster-name: DevOps-Capstone
+            requires:
+              - aws-eks/create-cluster
+       - aws-eks/update-container-image:
+            cluster-name: DevOps-Capstone
+            container-image-updates: 'nginx=nginx:1.9.1'
+            post-steps:
+              - kubernetes/delete-resource:
+                  resource-names: deployment/DevOps-Capstone
+                  resource-types: deployment
+                  wait: true
+            record: true
+            requires:
+              - create-deployment
+            resource-name: deployment/DevOps-Capstone
+      
+       
