@@ -56,7 +56,7 @@ jobs:
             docker tag $TAG $dockerpath
             docker push $dockerpath
   
-  # https://circleci.com/developer/orbs/orb/circleci/aws-eks#usage-create-k8s-deployment 
+  #  used https://circleci.com/developer/orbs/orb/circleci/aws-eks#usage-create-k8s-deployment as sample
   create-deployment:
     executor: aws-eks/python3
     parameters:
@@ -83,10 +83,9 @@ workflows:
        - lint-app
        - build-docker-image:
             requires: [lint-app]
-      # - deploy-kubernetes:
-      #       requires: [build-docker-image]
        - aws-eks/create-cluster:
             cluster-name: DevOps-Capstone
+            requires: [build-docker-image]
        - create-deployment:
             cluster-name: DevOps-Capstone
             requires:
