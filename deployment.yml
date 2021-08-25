@@ -1,15 +1,15 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: DevOps-Capstone
+  name: capstone
   labels:
-    app: DevOps-Capstone
+    app: capstone
   namespace: default
 spec:
   replicas: 3
   selector:
     matchLabels:
-      app: DevOps-Capstone
+      app: capstone
   strategy:
     rollingUpdate:
       maxSurge: 25%
@@ -18,12 +18,12 @@ spec:
   template:
     metadata:
       labels:
-        app: DevOps-Capstone
+        app: capstone
     spec:
       containers:
         - image: 8762783629/capstone
           imagePullPolicy: Always
-          name: DevOps-Capstone
+          name: capstone
           ports:
             - containerPort: 80
 
@@ -31,13 +31,13 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: DevOps-Capstone
+  name: capstone
   labels:
-    app: DevOps-Capstone
+    app: capstone
 spec:
   type: LoadBalancer
   selector:
-    app: DevOps-Capstone
+    app: capstone
   ports:
     - port: 80
       targetPort: 80
