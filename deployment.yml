@@ -14,11 +14,13 @@ spec:
       - name: DevOps-Capstone
         image: 8762783629/capstone
         ports:
-        - containerPort: 8080
+        - containerPort: 80
         readinessProbe:
           httpGet:
             path: /
-            port: 8080
-  strategy:
-    type: RollingUpdate
-    rollingUp      maxSurge: 50%
+            port: 80
+        strategy:
+          rollingUpdate:
+            maxSurge: 50%
+            maxUnavailable: 50%
+          type: RollingUpdate
