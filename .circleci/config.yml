@@ -85,7 +85,6 @@ workflows:
             requires: [lint-app]
        - aws-eks/create-cluster:
             cluster-name: DevOps-Capstone
-            requires: [build-docker-image]
        - create-deployment:
             cluster-name: DevOps-Capstone
             requires:
