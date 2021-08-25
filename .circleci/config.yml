@@ -62,7 +62,7 @@ jobs:
     parameters:
       cluster-name:
         description: |
-          DevOps-Capstone
+          capstone
         type: string
     steps:
       - checkout
@@ -73,7 +73,7 @@ jobs:
       - kubernetes/create-or-update-resource:
           get-rollout-status: true
           resource-file-path: deployment.yml
-          resource-name: deployment/DevOps-Capstone
+          resource-name: deployment/capstone
 
             
             
@@ -84,22 +84,22 @@ workflows:
        - build-docker-image:
             requires: [lint-app]
        - aws-eks/create-cluster:
-            cluster-name: DevOps-Capstone
+            cluster-name: capstone
        - create-deployment:
-            cluster-name: DevOps-Capstone
+            cluster-name: capstone
             requires:
               - aws-eks/create-cluster
        - aws-eks/update-container-image:
-            cluster-name: DevOps-Capstone
+            cluster-name: capstone
             container-image-updates: 'nginx=nginx:1.9.1'
             post-steps:
               - kubernetes/delete-resource:
-                  resource-names: deployment/DevOps-Capstone
+                  resource-names: deployment/capstone
                   resource-types: deployment
                   wait: true
             record: true
             requires:
               - create-deployment
-            resource-name: deployment/DevOps-Capstone
+            resource-name: deployment/capstone
       
        
