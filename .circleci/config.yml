@@ -42,7 +42,7 @@ jobs:
       - run:
           name: Build Docker Image
           command: |
-            docker build --tag=rush-capstone .
+            docker build --tag=capstone .
       - run:
           name: List Docker Image
           command: |
@@ -51,7 +51,7 @@ jobs:
           name: Push Docker image into Docker Hub
           command: |
             echo $DOCKER_PASSWORD | docker login -u $DOCKER_USER --password-stdin
-            TAG=rush-capstone
+            TAG=capstone
             dockerpath=8762783629/$TAG
             docker tag $TAG $dockerpath
             docker push $dockerpath
@@ -62,7 +62,7 @@ jobs:
     parameters:
       cluster-name:
         description: |
-          rush-capstone
+          capstone
         type: string
     steps:
       - checkout
@@ -73,14 +73,14 @@ jobs:
       - kubernetes/create-or-update-resource:
           get-rollout-status: true
           resource-file-path: deployment.yml
-          resource-name: deployment/rush-capstone
+          resource-name: deployment/capstone
   
   test-deployment:
     executor: aws-eks/python3
     parameters:
       cluster-name:
         description: |
-          rush-capstone
+          capstone
         type: string
     steps:
       - kubernetes/install
@@ -102,13 +102,13 @@ workflows:
        - build-docker-image:
             requires: [lint-app]
        - aws-eks/create-cluster:
-            cluster-name: rush-capstone
+            cluster-name: capstone
        - create-deployment:
-            cluster-name: rush-capstone
+            cluster-name: capstone
             requires:
               - aws-eks/create-cluster
        - test-deployment:
-            cluster-name: rush-capstone
+            cluster-name: capstone
             requires:
               - create-deployment
        
