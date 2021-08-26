@@ -1,15 +1,15 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: capstone
+  name: rush-capstone
   labels:
-    app: capstone
+    app: rush-capstone
   namespace: default
 spec:
   replicas: 3
   selector:
     matchLabels:
-      app: capstone
+      app: rush-capstone
   strategy:
     rollingUpdate:
       maxSurge: 25%
@@ -18,12 +18,12 @@ spec:
   template:
     metadata:
       labels:
-        app: capstone
+        app: rush-capstone
     spec:
       containers:
-        - image: 8762783629/capstone
+        - image: 8762783629/rush-capstone
           imagePullPolicy: Always
-          name: capstone
+          name: rush-capstone
           ports:
             - containerPort: 80
 
@@ -31,13 +31,13 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: capstone
+  name: rush-capstone
   labels:
-    app: capstone
+    app: rush-capstone
 spec:
   type: LoadBalancer
   selector:
-    app: capstone
+    app: rush-capstone
   ports:
     - port: 80
       targetPort: 80

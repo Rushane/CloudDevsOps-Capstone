@@ -42,7 +42,7 @@ jobs:
       - run:
           name: Build Docker Image
           command: |
-            docker build --tag=capstone .
+            docker build --tag=rush-capstone .
       - run:
           name: List Docker Image
           command: |
@@ -51,7 +51,7 @@ jobs:
           name: Push Docker image into Docker Hub
           command: |
             echo $DOCKER_PASSWORD | docker login -u $DOCKER_USER --password-stdin
-            TAG=capstone
+            TAG=rush-capstone
             dockerpath=8762783629/$TAG
             docker tag $TAG $dockerpath
             docker push $dockerpath
@@ -62,7 +62,7 @@ jobs:
     parameters:
       cluster-name:
         description: |
-          capstone
+          rush-capstone
         type: string
     steps:
       - checkout
@@ -73,7 +73,25 @@ jobs:
       - kubernetes/create-or-update-resource:
           get-rollout-status: true
           resource-file-path: deployment.yml
-          resource-name: deployment/capstone
+          resource-name: deployment/rush-capstone
+  
+  test-deployment:
+    executor: aws-eks/python3
+    parameters:
+      cluster-name:
+        description: |
+          rush-capstone
+        type: string
+    steps:
+      - kubernetes/install
+      - aws-eks/update-kubeconfig-with-authenticator:
+          cluster-name: << parameters.cluster-name >>
+      - run:
+          name: deployment test
+          command: |
+            kubectl get svc
+            kubectl get nodes
+            kubectl get deployment
 
             
             
@@ -84,22 +102,15 @@ workflows:
        - build-docker-image:
             requires: [lint-app]
        - aws-eks/create-cluster:
-            cluster-name: capstone
+            cluster-name: rush-capstone
        - create-deployment:
-            cluster-name: capstone
+            cluster-name: rush-capstone
             requires:
               - aws-eks/create-cluster
-       - aws-eks/update-container-image:
-            cluster-name: capstone
-            container-image-updates: 'nginx=nginx:1.9.1'
-            post-steps:
-              - kubernetes/delete-resource:
-                  resource-names: deployment/capstone
-                  resource-types: deployment
-                  wait: true
-            record: true
+       - test-deployment:
+            cluster-name: rush-capstone
             requires:
               - create-deployment
-            resource-name: deployment/capstone
-      
+       
+
        
