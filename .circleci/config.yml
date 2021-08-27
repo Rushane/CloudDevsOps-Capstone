@@ -74,27 +74,7 @@ jobs:
           get-rollout-status: true
           resource-file-path: deployment.yml
           resource-name: deployment/capstone
-  
-  test-deployment:
-    executor: aws-eks/python3
-    parameters:
-      cluster-name:
-        description: |
-          capstone
-        type: string
-    steps:
-      - kubernetes/install
-      - aws-eks/update-kubeconfig-with-authenticator:
-          cluster-name: << parameters.cluster-name >>
-      - run:
-          name: deployment test
-          command: |
-            kubectl get svc
-            kubectl get nodes
-            kubectl get deployment
 
-            
-            
 workflows:
   default:
     jobs:
@@ -107,10 +87,6 @@ workflows:
             cluster-name: capstone
             requires:
               - aws-eks/create-cluster
-       - test-deployment:
-            cluster-name: capstone
-            requires:
-              - create-deployment
        
 
        
